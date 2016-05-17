@@ -23,7 +23,7 @@ namespace ClearCode.Web.Features.VoteCounting
         {
             var results = _voteCounter.Tally(model.Votes);
             if (results.WasSuccessful)
-                return View("Results", results);
+                return View("Results", results.Value);
 
             model.Error = results.ErrorString;
             return View(model);

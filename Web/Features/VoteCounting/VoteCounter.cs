@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Autofac;
 using ClearCode.Web.Domain;
@@ -10,111 +9,46 @@ using ClearCode.Web.Plumbing.Query;
 
 namespace ClearCode.Web.Features.VoteCounting
 {
-    public class PartyPreferencesByYearFilter : IFilter<PartyPreference>
-    {
-        private readonly int _year;
-
-        public PartyPreferencesByYearFilter(int year)
-        {
-            _year = year;
-        }
-
-        public IQueryable<PartyPreference> Execute(IQueryable<PartyPreference> items) => items.Where(p => p.Year == _year);
-    }
-
-    public class ProjectPartyPreferencesToLookupProjection :
-        IScalarProjection<PartyPreference, Dictionary<String, String[]>>
-    {
-        public Dictionary<string, string[]> Execute(IQueryable<PartyPreference> items)
-        {
-            return items.GroupBy(p => p.Candidate)
-                .ToDictionary(g => g.Key.Name,
-                    g => new[] { g.Key.Name }.Concat(g.OrderBy(p => p.Ordinal).Select(p => p.Pref)).ToArray());
-        }
-    }
-
     [InstancePerDependency]
     public class VoteCounter
     {
+        private readonly IDataContext _dataContext;
         private readonly IQueryExecuter _queryExecuter;
 
-        public VoteCounter(IQueryExecuter queryExecuter)
+        public VoteCounter(IDataContext dataContext, IQueryExecuter queryExecuter)
         {
+            _dataContext = dataContext;
             _queryExecuter = queryExecuter;
-        }
-
-        public Result<TallyResults> Tally(string[][] votes)
-        {
-            var tallyResults = new TallyResults
-            {
-                Counts = new List<Dictionary<string, int>>()
-            };
-
-            var partyPreferencesQ = new PartyPreferencesByYearFilter(2016)
-                .Pipe(new ProjectPartyPreferencesToLookupProjection());
-            var partyPreferences = _queryExecuter.Execute(partyPreferencesQ);
-
-
-            var candidates = _queryExecuter.Execute(new AllFilter<Candidate>());
-            var tally = candidates.ToDictionary(c => c.Name, c => new List<string[]>());
-
-            IReadOnlyList<string[]> votesToDistribute = votes;
-            while (true)
-            {
-                var result = DistributeVotes(votesToDistribute, partyPreferences, tally);
-                if(result.WasFailure)
-                    return Result<TallyResults>.Failed(result);
-
-                tallyResults.Counts.Add(tally.ToDictionary(x => x.Key, x => x.Value.Count));
-
-                if (tally.Count == 2)
-                    break;
-
-                var lowest = tally.OrderBy(r => r.Value.Count).First();
-                tally.Remove(lowest.Key);
-                votesToDistribute = lowest.Value;
-            }
-            return tallyResults;
         }
 
         public Result<TallyResults> Tally(string rawInput)
         {
-            var votes = VoteInputParser.ParseInput(rawInput);
-            return votes.WasFailure ? Result<TallyResults>.Failed(votes) : Tally(votes);
+            var partyPreferences = _queryExecuter.Execute(
+                new PartyPreferencesByYearFilter(2016)
+                .Pipe(new ProjectPartyPreferencesToLookupProjection())
+            );
+
+            var votes = rawInput.Split('\n')
+                .Select(SplitAndTrim)
+                .Select((v, n) => Vote.Create(n, v, partyPreferences))
+                .ToArray();
+
+            if(votes.Any(v => v.WasFailure))
+                return Result<TallyResults>.Failed(votes);
+
+            return Tally(votes.Select(v => v.Value).ToArray());
         }
 
-        private static IResult DistributeVotes(IReadOnlyList<string[]> votes, Dictionary<string, string[]> partyPreferences, Dictionary<string, List<string[]>> tally)
+        private static string[] SplitAndTrim(string v) => v.Split(',').Select(p => p.Trim()).ToArray();
+
+        public Result<TallyResults> Tally(IReadOnlyList<Vote> votes)
         {
-            var results = votes.Select((vote,n) =>
-            {
-                var preferences = GetPreferences(votes[n], partyPreferences, n);
-                if (preferences.WasFailure)
-                    return (IResult) preferences;
+            var candidates = _dataContext.Table<Candidate>().ToArray();
 
-                var candidate = preferences.Value.FirstOrDefault(p => tally.Keys.Contains(p));
+            var results = TallyBoard.Tally(candidates, votes);
 
-                if (candidate == null)
-                    return Result.Failed($"{n}: No more preferences left");
-
-                tally[candidate].Add(preferences);
-                return Result.Success();
-            }
-            ) ;
-
-            return Result.From(results.ToArray());
+            return new TallyResults(results);
         }
-
-
-        private static Result<string[]> GetPreferences(string[] vote, Dictionary<string, string[]> partyPreferences, int voteId)
-        {
-            if (vote.Length > 1)
-                return vote;
-
-            string[] preferences;
-            if (!partyPreferences.TryGetValue(vote[0], out preferences))
-                return Result<string[]>.Failed($"{voteId}: Could not find the party preferences for {vote[0]}");
-            return preferences;
-        }
+     
     }
-
 }

@@ -184,7 +184,13 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
-    <Compile Include="Features\VoteCounting\VoteInputParser.cs" />
+    <Compile Include="Features\VoteCounting\Models\CandidateResult.cs" />
+    <Compile Include="Features\VoteCounting\Models\TallyResults.cs" />
+    <Compile Include="Features\VoteCounting\Preferences.cs" />
+    <Compile Include="Features\VoteCounting\Queries\PartyPreferencesByYearFilter.cs" />
+    <Compile Include="Features\VoteCounting\Queries\ProjectPartyPreferencesToLookupProjection.cs" />
+    <Compile Include="Features\VoteCounting\TallyBoard.cs" />
+    <Compile Include="Features\VoteCounting\Vote.cs" />
     <Compile Include="Domain\DataContext.cs" />
     <Compile Include="Domain\Entities\AnswerEntity.cs" />
     <Compile Include="Domain\Entities\Candidate.cs" />
@@ -195,7 +201,7 @@
     <Compile Include="Domain\Entities\StatEntity.cs" />
     <Compile Include="Domain\Entities\UserEntity.cs" />
     <Compile Include="Domain\IDataContext.cs" />
-    <Compile Include="Features\VoteCounting\Models\TallyResults.cs" />
+    <Compile Include="Features\VoteCounting\Models\TallyResult.cs" />
     <Compile Include="Features\VoteCounting\VoteCounter.cs" />
     <Compile Include="Plumbing\Query\AllFilter.cs" />
     <Compile Include="Plumbing\Query\Filter.cs" />
@@ -213,6 +219,7 @@
     <Compile Include="Plumbing\Query\IFilter.cs" />
     <Compile Include="Plumbing\Query\QueryExtensions.cs" />
     <Compile Include="Plumbing\Query\IScalarProjection.cs" />
+    <Compile Include="Plumbing\ReadOnlyList.cs" />
     <Compile Include="Plumbing\Result.cs" />
     <Compile Include="Plumbing\ResultExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

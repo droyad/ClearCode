@@ -1,9 +1,14 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace ClearCode.Web.Features.VoteCounting.Models
 {
     public class TallyResults
     {
-        public List<Dictionary<string, int>>  Counts { get; set; }
+        public IReadOnlyList<TallyResult> Tallies { get; set; }
+
+        public TallyResults(IReadOnlyList<TallyResult> tallies)
+        {
+            Tallies = tallies;
+        }
     }
 }

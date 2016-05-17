@@ -17,10 +17,10 @@ namespace ClearCode.Web.Domain
                 {
                     new PartyPreference("Palmer", 1, "Xenaphon"),
                     new PartyPreference("Palmer", 2, "Rudd"),
-                    new PartyPreference("Palmer", 3, "Turbull"),
+                    new PartyPreference("Palmer", 3, "Stott Despoja"),
                     new PartyPreference("Palmer", 4, "Abbott"),
                     new PartyPreference("Xenaphon", 1, "Rudd"),
-                    new PartyPreference("Xenaphon", 2, "Turbull"),
+                    new PartyPreference("Xenaphon", 2, "Stott Despoja"),
                     new PartyPreference("Xenaphon", 3, "Abbott"),
                     new PartyPreference("Xenaphon", 4, "Palmer"),
                     new PartyPreference("Stott Despoja", 1, "Xenaphon"),
@@ -29,11 +29,11 @@ namespace ClearCode.Web.Domain
                     new PartyPreference("Stott Despoja", 4, "Palmer"),
                     new PartyPreference("Rudd", 1, "Xenaphon"),
                     new PartyPreference("Rudd", 2, "Palmer"),
-                    new PartyPreference("Rudd", 3, "Turbull"),
+                    new PartyPreference("Rudd", 3, "Stott Despoja"),
                     new PartyPreference("Rudd", 4, "Abbott"),
                     new PartyPreference("Abbott", 1, "Xenaphon"),
                     new PartyPreference("Abbott", 2, "Rudd"),
-                    new PartyPreference("Abbott", 3, "Turbull"),
+                    new PartyPreference("Abbott", 3, "Stott Despoja"),
                     new PartyPreference("Abbott", 4, "Palmer")
                 }
             },

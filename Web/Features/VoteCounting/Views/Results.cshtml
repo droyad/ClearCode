@@ -4,16 +4,16 @@
     ViewBag.Title = "Tally Results";
 }
 
-@for (var r = 0; r < Model.Counts.Count; r++)
+@foreach(var tally in Model.Tallies)
 {
-    <h1>Round @(r + 1)</h1>
+    <h1>Round @tally.Round</h1>
     <table class="table" style="width: auto">
 
-        @foreach (var candidate in Model.Counts[r].OrderByDescending(c => c.Value))
+        @foreach (var candidate in tally.CandidateResults)
         {
             <tr>
-                <td>@candidate.Key</td>
-                <td>@candidate.Value</td>
+                <td>@candidate.Candidate.Name</td>
+                <td>@candidate.Votes</td>
             </tr>
         }
     </table>

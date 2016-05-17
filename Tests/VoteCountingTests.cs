@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using ClearCode.Web.Controllers;
+using ClearCode.Web.Domain.Entities;
 using ClearCode.Web.Features.VoteCounting;
 using ClearCode.Web.Features.VoteCounting.Models;
 using ClearCode.Web.Models;
@@ -20,29 +21,43 @@ namespace ClearCode.Tests
         {
             var testData = GetTestData().Take(10000).ToArray();
 
-            var counter = new VoteCounter(new QueryExecuter(new FakeDataContext()));
-            var result = counter.Tally(testData);
-            result.WasSuccessful.Should().BeTrue();
-            var winners = result.Value.Counts
+            var result = TallyBoard.Tally(GetCandidates(), testData);
+            var winners = result
                 .Last()
-                .OrderByDescending(x => x.Value)
+                .CandidateResults
+                .OrderByDescending(x => x.Votes)
                 .ToArray();
 
-            winners[0].Key.Should().Be("Rudd");
-            winners[1].Key.Should().Be("Stott Despoja");
-            winners[0].Value.Should().Be(5421);
-            winners[1].Value.Should().Be(4579);
+            winners[0].Candidate.Name.Should().Be("Rudd");
+            winners[1].Candidate.Name.Should().Be("Stott Despoja");
+            winners[0].Votes.Should().Be(5421);
+            winners[1].Votes.Should().Be(4579);
         }
+
 
         [TestMethod]
         public void TooManyPreferencesTest()
         {
-            var result = VoteInputParser.ParseInput("A,B,C,D,E,F,G");
+            var result = Vote.Create(1, new string[6], GetPartyPreferences());
             result.WasSuccessful.Should().BeFalse();
+            result.ErrorString.Should().Be("1: has more than the maximum number of allowed preferences");
         }
 
 
-        private IEnumerable<string[]> GetTestData()
+        private Candidate[] GetCandidates()
+        {
+            return new[]
+            {
+                new Candidate("Palmer"),
+                new Candidate("Xenaphon"),
+                new Candidate("Stott Despoja"),
+                new Candidate("Rudd"),
+                new Candidate("Abbott")
+            };
+        }
+
+
+        private IEnumerable<Vote> GetTestData()
         {
             var candidates = new[]
             {
@@ -53,17 +68,21 @@ namespace ClearCode.Tests
                 new {Name = "Abbott", Popularity = 2},
             };
 
+            var partyPreferences = GetPartyPreferences();
+
+
             var rnd = new Random(325346);
+            var id = 1;
             while (true)
             {
                 var numberOfChoices = rnd.Next(10) <= 7 ? candidates.Length : 1;
-                var preferences = new string[numberOfChoices];
+                var castVote = new string[numberOfChoices];
                 for (int y = 0; y < numberOfChoices; y++)
                 {
-                    var possibleChoices = candidates.Where(c => !preferences.Contains(c.Name)).ToArray();
+                    var possibleChoices = candidates.Where(c => !castVote.Contains(c.Name)).ToArray();
                     var totalPopularity = possibleChoices.Sum(c => c.Popularity);
                     var choiceNum = rnd.Next(totalPopularity);
-                    preferences[y] = possibleChoices.SkipWhile(
+                    castVote[y] = possibleChoices.SkipWhile(
                         c =>
                         {
                             choiceNum = choiceNum - c.Popularity;
@@ -71,8 +90,21 @@ namespace ClearCode.Tests
                         }
                     ).First().Name;
                 }
-                yield return preferences;
+                yield return Vote.Create(id++, castVote, partyPreferences);
             }
+        }
+
+        private static Dictionary<Candidate, Preferences> GetPartyPreferences()
+        {
+            var partyPreferences = new Dictionary<Candidate, Preferences>()
+            {
+                {new Candidate("Palmer"), new Preferences(new[] {"Palmer", "Xenaphon", "Rudd", "Stott Despoja", "Abbott"})},
+                {new Candidate("Xenaphon"), new Preferences(new[] { "Xenaphon", "Rudd", "Stott Despoja", "Abbott", "Palmer"})},
+                {new Candidate("Stott Despoja"), new Preferences(new[] {"Stott Despoja", "Xenaphon", "Rudd", "Abbott", "Palmer"})},
+                {new Candidate("Rudd"), new Preferences(new[] {"Rudd", "Xenaphon", "Palmer", "Stott Despoja", "Abbott"})},
+                {new Candidate("Abbott"), new Preferences(new[] {"Abbott", "Xenaphon", "Rudd", "Stott Despoja", "Palmer"})}
+            };
+            return partyPreferences;
         }
     }
 }
