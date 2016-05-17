@@ -2,12 +2,12 @@ namespace ClearCode.Web.Plumbing.Query
 {
     public static class QueryExtensions
     {
-        public static PipeProjection<TIn, TOut> Pipe<TIn, TMiddle, TOut>(this PipeProjection<TIn, TMiddle> a, PipeProjection<TMiddle, TOut> b)
+        public static IProjection<TIn, TOut> Pipe<TIn, TMiddle, TOut>(this IProjection<TIn, TMiddle> a, IProjection<TMiddle, TOut> b)
         {
-            return new PipeFilter<TIn, TMiddle, TOut>(a, b);
+            return new Filter<TIn, TMiddle, TOut>(a, b);
         }
 
-        public static PipeScalarProjection<TIn, TMiddle, TOut> Pipe<TIn, TMiddle, TOut>(this PipeProjection<TIn, TMiddle> a, ScalarProjection<TMiddle, TOut> b)
+        public static PipeScalarProjection<TIn, TMiddle, TOut> Pipe<TIn, TMiddle, TOut>(this IProjection<TIn, TMiddle> a, IScalarProjection<TMiddle, TOut> b)
         {
             return new PipeScalarProjection<TIn, TMiddle, TOut>(a, b);
         }

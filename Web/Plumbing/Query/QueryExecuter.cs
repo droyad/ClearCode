@@ -1,11 +1,14 @@
-﻿using Autofac;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Autofac;
 using ClearCode.Web.Domain;
 
 namespace ClearCode.Web.Plumbing.Query
 {
     public interface IQueryExecuter
     {
-        TProjection Execute<T, TProjection>(ScalarProjection<T, TProjection> projection);
+        TProjection Execute<T, TProjection>(IScalarProjection<T, TProjection> projection);
+        IReadOnlyList<TProjection> Execute<T, TProjection>(IProjection<T, TProjection> projection);
     }
 
     [InstancePerDependency]
@@ -18,9 +21,14 @@ namespace ClearCode.Web.Plumbing.Query
             _dataContext = dataContext;
         }
 
-        public TProjection Execute<T, TProjection>(ScalarProjection<T, TProjection> projection)
+        public TProjection Execute<T, TProjection>(IScalarProjection<T, TProjection> projection)
         {
             return projection.Execute(_dataContext.Table<T>());
+        }
+
+        public IReadOnlyList<TProjection> Execute<T, TProjection>(IProjection<T, TProjection> projection)
+        {
+            return projection.Execute(_dataContext.Table<T>()).ToArray();
         }
     }
 }

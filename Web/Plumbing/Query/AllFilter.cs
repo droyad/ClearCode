@@ -2,9 +2,9 @@
 
 namespace ClearCode.Web.Plumbing.Query
 {
-    public class AllFilter<T> : Filter<T>
+    public class AllFilter<T> : IFilter<T>
     {
-        public override IQueryable<T> Execute(IQueryable<T> items)
+        public IQueryable<T> Execute(IQueryable<T> items)
         {
             return items;
         }

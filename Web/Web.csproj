@@ -198,9 +198,9 @@
     <Compile Include="Features\VoteCounting\Models\Results.cs" />
     <Compile Include="Features\VoteCounting\VoteCounter.cs" />
     <Compile Include="Plumbing\Query\AllFilter.cs" />
-    <Compile Include="Plumbing\Query\PipeFilter.cs" />
+    <Compile Include="Plumbing\Query\Filter.cs" />
     <Compile Include="Plumbing\Query\PipeScalarProjection.cs" />
-    <Compile Include="Plumbing\Query\PipeProjection.cs" />
+    <Compile Include="Plumbing\Query\IProjection.cs" />
     <Compile Include="Plumbing\Query\QueryExecuter.cs" />
     <Compile Include="Features\VoteCounting\VoteCountingController.cs" />
     <Compile Include="Global.asax.cs">
@@ -210,9 +210,9 @@
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Features\VoteCounting\Models\VoteCountingIndexModel.cs" />
-    <Compile Include="Plumbing\Query\Filter.cs" />
+    <Compile Include="Plumbing\Query\IFilter.cs" />
     <Compile Include="Plumbing\Query\QueryExtensions.cs" />
-    <Compile Include="Plumbing\Query\ScalarProjection.cs" />
+    <Compile Include="Plumbing\Query\IScalarProjection.cs" />
     <Compile Include="Plumbing\Result.cs" />
     <Compile Include="Plumbing\ResultExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
