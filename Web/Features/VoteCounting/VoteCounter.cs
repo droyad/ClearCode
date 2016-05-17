@@ -9,7 +9,7 @@ using ClearCode.Web.Features.VoteCounting.Models;
 namespace ClearCode.Web.Features.VoteCounting
 {
     [InstancePerDependency]
-    public class VoteCounter : IVoteCounter
+    public class VoteCounter
     {
         private readonly IDataContext _dataContext;
 
@@ -50,6 +50,11 @@ namespace ClearCode.Web.Features.VoteCounting
             return results;
         }
 
+        public Results Tally(string rawInput)
+        {
+            return Tally(VoteInputParser.ParseInput(rawInput));
+        }
+
         private static void DistributeVotes(IReadOnlyList<string[]> votes, Dictionary<string, string[]> partyPreferences, Dictionary<string, List<string[]>> results)
         {
             for (var x = 0; x < votes.Count; x++)
@@ -76,8 +81,4 @@ namespace ClearCode.Web.Features.VoteCounting
         }
     }
 
-    public interface IVoteCounter
-    {
-        Results Tally(string[][] input);
-    }
 }

@@ -6,9 +6,9 @@ namespace ClearCode.Web.Features.VoteCounting
 {
     public class VoteCountingController : Controller
     {
-        private readonly IVoteCounter _voteCounter;
+        private readonly VoteCounter _voteCounter;
 
-        public VoteCountingController(IVoteCounter voteCounter)
+        public VoteCountingController(VoteCounter voteCounter)
         {
             _voteCounter = voteCounter;
         }
@@ -23,8 +23,7 @@ namespace ClearCode.Web.Features.VoteCounting
         {
             try
             {
-                var input = VoteInputParser.ParseInput(model.Votes);
-                var results = _voteCounter.Tally(input);
+                var results = _voteCounter.Tally(model.Votes);
                 return View("Results", results);
             }
             catch (Exception ex)
