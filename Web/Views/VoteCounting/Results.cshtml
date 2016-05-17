@@ -1,0 +1,20 @@
+﻿@model ClearCode.Services.Results
+
+@{
+    ViewBag.Title = "Tally Results";
+}
+
+@for (var r = 0; r < Model.Counts.Count; r++)
+{
+    <h1>Round @(r + 1)</h1>
+    <table class="table" style="width: auto">
+
+        @foreach (var candidate in Model.Counts[r].OrderByDescending(c => c.Value))
+        {
+            <tr>
+                <td>@candidate.Key</td>
+                <td>@candidate.Value</td>
+            </tr>
+        }
+    </table>
+}

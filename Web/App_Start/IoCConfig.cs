@@ -1,0 +1,24 @@
+﻿using System.Web.Mvc;
+using Autofac;
+using Autofac.Integration.Mvc;
+using ClearCode.Data;
+using ClearCode.Services;
+
+namespace ClearCode.Web
+{
+    public class IoCConfig
+    {
+        public static void Build()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterControllers(typeof(MvcApplication).Assembly);
+            builder.RegisterByAttributes(
+                typeof (IoCConfig).Assembly,
+                typeof (VotesService).Assembly,
+                typeof (DataContext).Assembly
+                );
+            var container = builder.Build();
+            DependencyResolver.SetResolver(new AutofacDependencyResolver(container));
+        }
+    }
+}

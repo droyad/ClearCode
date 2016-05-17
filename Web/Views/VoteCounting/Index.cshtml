@@ -1,0 +1,16 @@
+﻿@model ClearCode.Web.Models.VoteCountingIndexModel
+@{
+    ViewBag.Title = "Tally";
+}
+<br />
+<br />
+<br />
+<div style="color: red">@Model.Error</div>
+<form method="POST">
+    <div>
+        @Html.TextAreaFor(m => m.Votes, new { style = "width: 500px; max-width: 500px", rows = 20 })
+    </div>
+    <div>
+        <button type="submit">Calculate</button>
+    </div>
+</form>
