@@ -13,9 +13,7 @@ namespace ClearCode.Web
             var builder = new ContainerBuilder();
             builder.RegisterControllers(typeof(MvcApplication).Assembly);
             builder.RegisterByAttributes(
-                typeof (IoCConfig).Assembly,
-                typeof (VotesService).Assembly,
-                typeof (DataContext).Assembly
+                typeof (IoCConfig).Assembly
                 );
             var container = builder.Build();
             DependencyResolver.SetResolver(new AutofacDependencyResolver(container));

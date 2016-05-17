@@ -15,6 +15,6 @@ namespace ClearCode.Data
             _dataContext = dataContext;
         }
 
-        public List<Candidate> Candidates => _dataContext.Table<Candidate>().ToList();
+        public List<Candidate> Candidates => ;
     }
 }

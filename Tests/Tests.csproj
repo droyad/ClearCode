@@ -93,14 +93,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Data\Data.csproj">
-      <Project>{CABA44D0-496F-453D-8396-C5E5AFEF6B67}</Project>
-      <Name>Data</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Services\Services.csproj">
-      <Project>{B7306A25-3036-403C-AF8A-B6EE2E99921E}</Project>
-      <Name>Services</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Web\Web.csproj">
       <Project>{5E0B87CA-1E7D-4A7C-A1EF-8867D04DFDC1}</Project>
       <Name>Web</Name>

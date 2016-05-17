@@ -5,6 +5,7 @@ using System.Web.Mvc;
 using ClearCode.Data;
 using ClearCode.Services;
 using ClearCode.Web.Controllers;
+using ClearCode.Web.Features.VoteCounting;
 using ClearCode.Web.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -53,8 +54,7 @@ namespace ClearCode.Tests
         private static VoteCountingController CreateTestController()
         {
             var controller =
-                new VoteCountingController(new VotesService(new PreferenceRepository(new FakeDataContext()),
-                    new CandidateRepository(new FakeDataContext())));
+                new VoteCountingController(new VoteCounter(new FakeDataContext()));
             return controller;
         }
 

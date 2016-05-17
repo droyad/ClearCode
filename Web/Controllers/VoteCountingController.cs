@@ -3,17 +3,18 @@ using System.Configuration;
 using System.Linq;
 using System.Web.Mvc;
 using ClearCode.Services;
+using ClearCode.Web.Features.VoteCounting;
 using ClearCode.Web.Models;
 
 namespace ClearCode.Web.Controllers
 {
     public class VoteCountingController : Controller
     {
-        private readonly IVotesService _votesService;
+        private readonly IVoteCounter _voteCounter;
 
-        public VoteCountingController(IVotesService votesService)
+        public VoteCountingController(IVoteCounter voteCounter)
         {
-            _votesService = votesService;
+            _voteCounter = voteCounter;
         }
 
         public ActionResult Index()
@@ -26,18 +27,8 @@ namespace ClearCode.Web.Controllers
         {
             try
             {
-                var input = model.Votes.Split('\n')
-                    .Select(v => v.Split(',').Select(p => p.Trim()).ToArray())
-                    .ToArray();
-
-                var maxNumberOfPreferences = int.Parse(ConfigurationManager.AppSettings["MaximumNumberOfPreferences"]);
-                if (input.Any(v => v.Length > maxNumberOfPreferences))
-                {
-                    model.Error = "One or more votes has more than the maximum number of allowed preferences";
-                    return View(model);
-                }
-
-                var results = _votesService.Tally(input);
+                var input = VoteInputParser.ParseInput(model.Votes);
+                var results = _voteCounter.Tally(input);
                 return View("Results", results);
             }
             catch (Exception ex)
@@ -46,6 +37,5 @@ namespace ClearCode.Web.Controllers
                 return View(model);
             }
         }
-
     }
 }
