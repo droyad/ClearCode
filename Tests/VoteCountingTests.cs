@@ -6,6 +6,7 @@ using ClearCode.Web.Controllers;
 using ClearCode.Web.Features.VoteCounting;
 using ClearCode.Web.Features.VoteCounting.Models;
 using ClearCode.Web.Models;
+using ClearCode.Web.Plumbing.Query;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -19,7 +20,7 @@ namespace ClearCode.Tests
         {
             var testData = GetTestData().Take(10000).ToArray();
 
-            var counter = new VoteCounter(new FakeDataContext());
+            var counter = new VoteCounter(new QueryExecuter(new FakeDataContext()));
             var result = counter.Tally(testData);
 
             var winners = result.Counts

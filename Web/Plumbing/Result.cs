@@ -43,7 +43,7 @@ namespace ClearCode.Web.Plumbing
             return new Result() { WasSuccessful = true };
         }
 
-        public static Result From(params Result[] results)
+        public static Result From(params IResult[] results)
         {
             var failed = results.Where(r => !r.WasSuccessful).ToArray();
             if (failed.Length == 0)

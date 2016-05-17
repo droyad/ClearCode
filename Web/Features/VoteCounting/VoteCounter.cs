@@ -5,17 +5,41 @@ using Autofac;
 using ClearCode.Web.Domain;
 using ClearCode.Web.Domain.Entities;
 using ClearCode.Web.Features.VoteCounting.Models;
+using ClearCode.Web.Plumbing.Query;
 
 namespace ClearCode.Web.Features.VoteCounting
 {
+    public class PartyPreferencesByYearFilter : IFilter<PartyPreference>
+    {
+        private readonly int _year;
+
+        public PartyPreferencesByYearFilter(int year)
+        {
+            _year = year;
+        }
+
+        public IQueryable<PartyPreference> Execute(IQueryable<PartyPreference> items) => items.Where(p => p.Year == _year);
+    }
+
+    public class ProjectPartyPreferencesToLookupProjection :
+        IScalarProjection<PartyPreference, Dictionary<String, String[]>>
+    {
+        public Dictionary<string, string[]> Execute(IQueryable<PartyPreference> items)
+        {
+            return items.GroupBy(p => p.Candidate)
+                .ToDictionary(g => g.Key.Name,
+                    g => new[] { g.Key.Name }.Concat(g.OrderBy(p => p.Ordinal).Select(p => p.Pref)).ToArray());
+        }
+    }
+
     [InstancePerDependency]
     public class VoteCounter
     {
-        private readonly IDataContext _dataContext;
+        private readonly IQueryExecuter _queryExecuter;
 
-        public VoteCounter(IDataContext dataContext)
+        public VoteCounter(IQueryExecuter queryExecuter)
         {
-            _dataContext = dataContext;
+            _queryExecuter = queryExecuter;
         }
 
         public Results Tally(string[][] votes)
@@ -25,12 +49,12 @@ namespace ClearCode.Web.Features.VoteCounting
                 Counts = new List<Dictionary<string, int>>()
             };
 
-            var partyPreferences = _dataContext.Table<PartyPreference>()
-                .Where(p => p.Year == 2016)
-                .GroupBy(p => p.Candidate)
-                .ToDictionary(g => g.Key.Name, g => new[] { g.Key.Name }.Concat(g.OrderBy(p => p.Ordinal).Select(p => p.Pref)).ToArray());
+            var partyPreferencesQ = new PartyPreferencesByYearFilter(2016)
+                .Pipe(new ProjectPartyPreferencesToLookupProjection());
+            var partyPreferences = _queryExecuter.Execute(partyPreferencesQ);
 
-            var candidates = _dataContext.Table<Candidate>().ToList();
+
+            var candidates = _queryExecuter.Execute(new AllFilter<Candidate>());
             var tally = candidates.ToDictionary(c => c.Name, c => new List<string[]>());
 
             IReadOnlyList<string[]> votesToDistribute = votes;
