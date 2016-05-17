@@ -1,4 +1,4 @@
-﻿using ClearCode.Data;
+﻿using ClearCode.Web.Domain;
 
 namespace ClearCode.Tests
 {

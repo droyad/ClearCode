@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Configuration;
-using System.Linq;
 using System.Web.Mvc;
-using ClearCode.Services;
-using ClearCode.Web.Features.VoteCounting;
-using ClearCode.Web.Models;
+using ClearCode.Web.Features.VoteCounting.Models;
 
-namespace ClearCode.Web.Controllers
+namespace ClearCode.Web.Features.VoteCounting
 {
     public class VoteCountingController : Controller
     {

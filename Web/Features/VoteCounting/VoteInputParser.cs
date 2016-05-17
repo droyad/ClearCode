@@ -2,7 +2,7 @@ using System;
 using System.Configuration;
 using System.Linq;
 
-namespace ClearCode.Web.Controllers
+namespace ClearCode.Web.Features.VoteCounting
 {
     public class VoteInputParser
     {

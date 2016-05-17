@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
-using ClearCode.Data;
-using ClearCode.Services;
 using ClearCode.Web.Controllers;
 using ClearCode.Web.Features.VoteCounting;
+using ClearCode.Web.Features.VoteCounting.Models;
 using ClearCode.Web.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 

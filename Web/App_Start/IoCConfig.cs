@@ -1,8 +1,6 @@
 ﻿using System.Web.Mvc;
 using Autofac;
 using Autofac.Integration.Mvc;
-using ClearCode.Data;
-using ClearCode.Services;
 
 namespace ClearCode.Web
 {

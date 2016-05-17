@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using Autofac;
-using ClearCode.Data;
-using ClearCode.Data.Entities;
-using ClearCode.Services;
+using ClearCode.Web.Domain;
+using ClearCode.Web.Domain.Entities;
+using ClearCode.Web.Features.VoteCounting.Models;
 
 namespace ClearCode.Web.Features.VoteCounting
 {

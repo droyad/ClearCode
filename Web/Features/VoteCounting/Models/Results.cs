@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace ClearCode.Services
+namespace ClearCode.Web.Features.VoteCounting.Models
 {
     public class Results
     {

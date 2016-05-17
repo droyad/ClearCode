@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace ClearCode.Data.Entities
+namespace ClearCode.Web.Domain.Entities
 {
     public class EVoteEntities : IDisposable
     {

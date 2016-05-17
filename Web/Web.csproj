@@ -184,7 +184,7 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
-    <Compile Include="Controllers\VoteInputParser.cs" />
+    <Compile Include="Features\VoteCounting\VoteInputParser.cs" />
     <Compile Include="Domain\DataContext.cs" />
     <Compile Include="Domain\Entities\AnswerEntity.cs" />
     <Compile Include="Domain\Entities\Candidate.cs" />
@@ -195,21 +195,21 @@
     <Compile Include="Domain\Entities\StatEntity.cs" />
     <Compile Include="Domain\Entities\UserEntity.cs" />
     <Compile Include="Domain\IDataContext.cs" />
-    <Compile Include="Features\VoteCounting\Results.cs" />
+    <Compile Include="Features\VoteCounting\Models\Results.cs" />
     <Compile Include="Features\VoteCounting\VoteCounter.cs" />
     <Compile Include="Plumbing\Query\AllFilter.cs" />
     <Compile Include="Plumbing\Query\PipeFilter.cs" />
     <Compile Include="Plumbing\Query\PipeScalarProjection.cs" />
     <Compile Include="Plumbing\Query\PipeProjection.cs" />
     <Compile Include="Plumbing\Query\QueryExecuter.cs" />
-    <Compile Include="Controllers\VoteCountingController.cs" />
+    <Compile Include="Features\VoteCounting\VoteCountingController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
-    <Compile Include="Models\VoteCountingIndexModel.cs" />
+    <Compile Include="Features\VoteCounting\Models\VoteCountingIndexModel.cs" />
     <Compile Include="Plumbing\Query\Filter.cs" />
     <Compile Include="Plumbing\Query\QueryExtensions.cs" />
     <Compile Include="Plumbing\Query\ScalarProjection.cs" />
@@ -227,6 +227,8 @@
     <Content Include="Content\Site.css" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="Features\_ViewStart.cshtml" />
+    <Content Include="Features\Web.config" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
@@ -273,8 +275,10 @@
     <Content Include="Views\Manage\VerifyPhoneNumber.cshtml" />
     <Content Include="Views\Shared\Lockout.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
-    <Content Include="Views\VoteCounting\Index.cshtml" />
-    <Content Include="Views\VoteCounting\Results.cshtml" />
+    <Content Include="Features\VoteCounting\Views\Index.cshtml" />
+    <Content Include="Features\VoteCounting\Views\Results.cshtml" />
+    <Content Include="Views\_ViewStart - Copy.cshtml" />
+    <Content Include="Views\Web - Copy.config" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
@@ -284,7 +288,9 @@
     <None Include="Project_Readme.html" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Views\VoteCounting\" />
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

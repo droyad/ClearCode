@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 
-namespace ClearCode.Data
+namespace ClearCode.Web.Domain
 {
     public interface IDataContext
     {

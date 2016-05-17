@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using Autofac;
-using ClearCode.Data.Entities;
+using ClearCode.Web.Domain.Entities;
 
-namespace ClearCode.Data
+namespace ClearCode.Web.Domain
 {
     [InstancePerDependency]
     public class DataContext : IDataContext

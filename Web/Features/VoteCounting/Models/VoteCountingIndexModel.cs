@@ -1,4 +1,4 @@
-﻿namespace ClearCode.Web.Models
+﻿namespace ClearCode.Web.Features.VoteCounting.Models
 {
     public class VoteCountingIndexModel
     {
