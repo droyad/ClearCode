@@ -6,6 +6,7 @@ using ClearCode.Web.Controllers;
 using ClearCode.Web.Features.VoteCounting;
 using ClearCode.Web.Features.VoteCounting.Models;
 using ClearCode.Web.Models;
+using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace ClearCode.Tests
@@ -17,44 +18,27 @@ namespace ClearCode.Tests
         public void FullTallyTest()
         {
             var testData = GetTestData().Take(10000).ToArray();
-            var controller = CreateTestController();
-            var model = new VoteCountingIndexModel()
-            {
-                Votes = string.Join(Environment.NewLine, testData.Select(d => string.Join(", ", d)))
-            };
-            var view = (ViewResult)controller.Index(model);
-            var result = (Results) view.Model;
+
+            var counter = new VoteCounter(new FakeDataContext());
+            var result = counter.Tally(testData);
 
             var winners = result.Counts
                 .Last()
                 .OrderByDescending(x => x.Value)
                 .ToArray();
 
-            Assert.AreEqual(winners[0].Key, "Rudd");
-            Assert.AreEqual(winners[1].Key, "Stott Despoja");
-            Assert.AreEqual(winners[0].Value, 5421);
-            Assert.AreEqual(winners[1].Value, 4579);
+            winners[0].Key.Should().Be("Rudd");
+            winners[1].Key.Should().Be("Stott Despoja");
+            winners[0].Value.Should().Be(5421);
+            winners[1].Value.Should().Be(4579);
         }
 
         [TestMethod]
         public void TooManyPreferencesTest()
         {
-            var controller = CreateTestController();
-            var model = new VoteCountingIndexModel()
-            {
-                Votes = "A,B,C,D,E,F,G"
-            };
-            var view = (ViewResult)controller.Index(model);
-            var result = (VoteCountingIndexModel)view.Model;
-            Assert.AreEqual(result.Error, "One or more votes has more than the maximum number of allowed preferences");
-        }
-
-
-        private static VoteCountingController CreateTestController()
-        {
-            var controller =
-                new VoteCountingController(new VoteCounter(new FakeDataContext()));
-            return controller;
+            Action action = () => VoteInputParser.ParseInput("A,B,C,D,E,F,G");
+            action.ShouldThrow<Exception>()
+                .WithMessage("One or more votes has more than the maximum number of allowed preferences");
         }
 
 
