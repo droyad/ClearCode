@@ -22,8 +22,8 @@ namespace ClearCode.Tests
 
             var counter = new VoteCounter(new QueryExecuter(new FakeDataContext()));
             var result = counter.Tally(testData);
-
-            var winners = result.Counts
+            result.WasSuccessful.Should().BeTrue();
+            var winners = result.Value.Counts
                 .Last()
                 .OrderByDescending(x => x.Value)
                 .ToArray();
@@ -37,9 +37,8 @@ namespace ClearCode.Tests
         [TestMethod]
         public void TooManyPreferencesTest()
         {
-            Action action = () => VoteInputParser.ParseInput("A,B,C,D,E,F,G");
-            action.ShouldThrow<Exception>()
-                .WithMessage("One or more votes has more than the maximum number of allowed preferences");
+            var result = VoteInputParser.ParseInput("A,B,C,D,E,F,G");
+            result.WasSuccessful.Should().BeFalse();
         }
 
 

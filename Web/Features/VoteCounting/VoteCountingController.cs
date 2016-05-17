@@ -21,16 +21,13 @@ namespace ClearCode.Web.Features.VoteCounting
         [HttpPost]
         public ActionResult Index(VoteCountingIndexModel model)
         {
-            try
-            {
-                var results = _voteCounter.Tally(model.Votes);
+            var results = _voteCounter.Tally(model.Votes);
+            if (results.WasSuccessful)
                 return View("Results", results);
-            }
-            catch (Exception ex)
-            {
-                model.Error = ex.Message;
-                return View(model);
-            }
+
+            model.Error = results.ErrorString;
+            return View(model);
+
         }
     }
 }

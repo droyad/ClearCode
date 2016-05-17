@@ -5,6 +5,7 @@ using Autofac;
 using ClearCode.Web.Domain;
 using ClearCode.Web.Domain.Entities;
 using ClearCode.Web.Features.VoteCounting.Models;
+using ClearCode.Web.Plumbing;
 using ClearCode.Web.Plumbing.Query;
 
 namespace ClearCode.Web.Features.VoteCounting
@@ -42,9 +43,9 @@ namespace ClearCode.Web.Features.VoteCounting
             _queryExecuter = queryExecuter;
         }
 
-        public Results Tally(string[][] votes)
+        public Result<TallyResults> Tally(string[][] votes)
         {
-            var results = new Results
+            var tallyResults = new TallyResults
             {
                 Counts = new List<Dictionary<string, int>>()
             };
@@ -60,9 +61,11 @@ namespace ClearCode.Web.Features.VoteCounting
             IReadOnlyList<string[]> votesToDistribute = votes;
             while (true)
             {
-                DistributeVotes(votesToDistribute, partyPreferences, tally);
+                var result = DistributeVotes(votesToDistribute, partyPreferences, tally);
+                if(result.WasFailure)
+                    return Result<TallyResults>.Failed(result);
 
-                results.Counts.Add(tally.ToDictionary(x => x.Key, x => x.Value.Count));
+                tallyResults.Counts.Add(tally.ToDictionary(x => x.Key, x => x.Value.Count));
 
                 if (tally.Count == 2)
                     break;
@@ -71,36 +74,45 @@ namespace ClearCode.Web.Features.VoteCounting
                 tally.Remove(lowest.Key);
                 votesToDistribute = lowest.Value;
             }
-            return results;
+            return tallyResults;
         }
 
-        public Results Tally(string rawInput)
+        public Result<TallyResults> Tally(string rawInput)
         {
-            return Tally(VoteInputParser.ParseInput(rawInput));
+            var votes = VoteInputParser.ParseInput(rawInput);
+            return votes.WasFailure ? Result<TallyResults>.Failed(votes) : Tally(votes);
         }
 
-        private static void DistributeVotes(IReadOnlyList<string[]> votes, Dictionary<string, string[]> partyPreferences, Dictionary<string, List<string[]>> results)
+        private static IResult DistributeVotes(IReadOnlyList<string[]> votes, Dictionary<string, string[]> partyPreferences, Dictionary<string, List<string[]>> tally)
         {
-            for (var x = 0; x < votes.Count; x++)
+            var results = votes.Select((vote,n) =>
             {
-                var preferences = GetPreferences(votes[x], partyPreferences, x);
-                var candidate = preferences.FirstOrDefault(p => results.Keys.Contains(p));
+                var preferences = GetPreferences(votes[n], partyPreferences, n);
+                if (preferences.WasFailure)
+                    return (IResult) preferences;
+
+                var candidate = preferences.Value.FirstOrDefault(p => tally.Keys.Contains(p));
 
                 if (candidate == null)
-                    throw new Exception($"{x}: No more preferences left");
-                results[candidate].Add(preferences);
+                    return Result.Failed($"{n}: No more preferences left");
+
+                tally[candidate].Add(preferences);
+                return Result.Success();
             }
+            ) ;
+
+            return Result.From(results.ToArray());
         }
 
 
-        private static string[] GetPreferences(string[] vote, Dictionary<string, string[]> partyPreferences, int voteId)
+        private static Result<string[]> GetPreferences(string[] vote, Dictionary<string, string[]> partyPreferences, int voteId)
         {
             if (vote.Length > 1)
                 return vote;
 
             string[] preferences;
             if (!partyPreferences.TryGetValue(vote[0], out preferences))
-                throw new Exception($"{voteId}: Could not find the party preferences for {vote[0]}");
+                return Result<string[]>.Failed($"{voteId}: Could not find the party preferences for {vote[0]}");
             return preferences;
         }
     }

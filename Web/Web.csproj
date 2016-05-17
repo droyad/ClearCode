@@ -195,7 +195,7 @@
     <Compile Include="Domain\Entities\StatEntity.cs" />
     <Compile Include="Domain\Entities\UserEntity.cs" />
     <Compile Include="Domain\IDataContext.cs" />
-    <Compile Include="Features\VoteCounting\Models\Results.cs" />
+    <Compile Include="Features\VoteCounting\Models\TallyResults.cs" />
     <Compile Include="Features\VoteCounting\VoteCounter.cs" />
     <Compile Include="Plumbing\Query\AllFilter.cs" />
     <Compile Include="Plumbing\Query\Filter.cs" />
